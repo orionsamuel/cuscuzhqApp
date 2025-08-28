@@ -1,0 +1,7 @@
+{
+  "name": "cuscuzhqApp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
