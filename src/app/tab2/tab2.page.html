@@ -1,17 +1,104 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Tab 2
+  <ion-toolbar color="dark">
+    <ion-title class="ion-text-center">
+      {{titulo}}
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 2</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" color="cuscuz">
 
-  <app-explore-container name="Tab 2 page"></app-explore-container>
+  <div class="center">
+
+    <form [formGroup]="formCadastro" (ngSubmit)="cadastro()" novalidate>
+
+      <!-- Nome -->
+      <ion-item lines="full">
+        <ion-label position="floating">
+          <ion-icon name="person" slot="start"></ion-icon>
+          Nome
+        </ion-label>
+        <ion-input clear-input="true" required type="text" formControlName="nome"></ion-input>
+      </ion-item>
+
+      <ion-item *ngIf="errorControl['nome'].invalid && isSubmitted" lines="none">
+        <ion-text color="danger">
+          <small *ngIf="errorControl['nome'].errors?.['required']">Nome é obrigatório</small>
+          <small *ngIf="errorControl['nome'].errors?.['minlength']">Nome deve ter pelo menos 2 caracteres</small>
+        </ion-text>
+      </ion-item>
+
+      <!-- Telefone -->
+      <ion-item lines="full">
+        <ion-label position="floating">
+          <ion-icon name="call" slot="start"></ion-icon>
+          Telefone
+        </ion-label>
+        <ion-input clear-input="true" required type="tel" formControlName="telefone"></ion-input>
+      </ion-item>
+
+      <ion-item *ngIf="errorControl['telefone'].invalid && isSubmitted" lines="none">
+        <ion-text color="danger">
+          <small *ngIf="errorControl['telefone'].errors?.['required']">Telefone é obrigatório</small>
+          <small *ngIf="errorControl['telefone'].errors?.['pattern']">Apenas números são permitidos</small>
+        </ion-text>
+      </ion-item>
+
+      <!-- E-mail -->
+      <ion-item lines="full">
+        <ion-label position="floating">
+          <ion-icon name="mail" slot="start"></ion-icon>
+          E-mail
+        </ion-label>
+        <ion-input clear-input="true" required type="email" formControlName="email"></ion-input>
+      </ion-item>
+
+      <ion-item *ngIf="errorControl['email'].invalid && isSubmitted" lines="none">
+        <ion-text color="danger">
+          <small *ngIf="errorControl['email'].errors?.['required']">Email é obrigatório</small>
+          <small *ngIf="errorControl['email'].errors?.['pattern']">Digite um email válido</small>
+        </ion-text>
+      </ion-item>
+
+      <!-- Radio Buttons para seleção de dia -->
+      <ion-item lines="full">
+        <ion-icon name="calendar" slot="start"></ion-icon>
+        <ion-label>Selecione o dia:</ion-label>
+      </ion-item>
+
+      <ion-radio-group formControlName="diaSelecionado" (ionChange)="onDiaChange($event)">
+        <ion-item lines="none">
+          <ion-radio slot="start" value="dia1"></ion-radio>
+          <ion-label>Dia 1</ion-label>
+        </ion-item>
+
+        <ion-item lines="none">
+          <ion-radio slot="start" value="dia2"></ion-radio>
+          <ion-label>Dia 2</ion-label>
+        </ion-item>
+      </ion-radio-group>
+
+      <ion-item *ngIf="errorControl['diaSelecionado'].invalid && isSubmitted" lines="none">
+        <ion-text color="danger">
+          <small *ngIf="errorControl['diaSelecionado'].errors?.['required']">Selecione um dia</small>
+        </ion-text>
+      </ion-item>
+
+      <!-- Botão de Cadastro -->
+      <ion-button expand="full" fill="outline" type="submit" class="ion-margin-top">
+        Cadastrar
+      </ion-button>
+
+    </form>
+
+  </div>
+
+  <!-- Toast -->
+  <ion-toast
+    [isOpen]="showToast"
+    [message]="toastMessage"
+    [color]="toastColor"
+    [duration]="2000">
+  </ion-toast>
+
 </ion-content>
