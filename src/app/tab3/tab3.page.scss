@@ -1,0 +1,45 @@
+.modal-content {
+  text-align: center;
+}
+
+.modal-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.audio-controls {
+  display: flex;
+  gap: 4px;
+}
+
+ion-thumbnail {
+  cursor: pointer;
+
+  img {
+    border-radius: 8px;
+    object-fit: cover;
+  }
+}
+
+ion-item {
+  --padding-start: 8px;
+  --padding-end: 8px;
+
+  h2{
+     text-align: center;
+   }
+
+   p{
+     text-align: center;
+   }
+}
+
+ion-content {
+  .no-participants {
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--ion-color-medium);
+  }
+}

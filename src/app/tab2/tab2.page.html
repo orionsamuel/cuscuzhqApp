@@ -40,7 +40,7 @@
       <ion-item *ngIf="errorControl['telefone'].invalid && isSubmitted" lines="none">
         <ion-text color="danger">
           <small *ngIf="errorControl['telefone'].errors?.['required']">Telefone é obrigatório</small>
-          <small *ngIf="errorControl['telefone'].errors?.['pattern']">Apenas números são permitidos</small>
+          <small *ngIf="errorControl['telefone'].errors?.['pattern']">Digite exatamente 11 números (com DDD)</small>
         </ion-text>
       </ion-item>
 
