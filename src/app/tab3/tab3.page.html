@@ -1,37 +1,59 @@
-<ion-header [translucent]="true">
-  <ion-toolbar color="cuscuz-preto">
-    <ion-title class="ion-text-center">
-      <h1>Cospobres</h1>
+<ion-header [translucent]="true" class="ion-no-border">
+  <ion-toolbar color="cuscuz">
+    <ion-title class="ion-text-left" color="cuscuz-preto">
+      <ion-text class="custom-title">{{titulo}}</ion-text>
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true" color="cuscuz">
-  <ion-list *ngIf="listaParticipantes">
 
-    <ion-item-sliding *ngFor="let participante of listaParticipantes">
+  <ion-refresher slot="fixed" (ionRefresh)="buscarParticipante($event)">
+    <ion-refresher-content
+      pullingIcon="arrow-down-outline"
+      refreshingSpinner="crescent"
+      pullingText="Puxe para atualizar"
+      refreshingText="Atualizando...">
+    </ion-refresher-content>
+  </ion-refresher>
 
-      <ion-item lines="full">
+  <div *ngIf="isLoading" class="loading-container ion-padding ion-text-center">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Carregando inscritos...</p>
+    </div>
+
+  <ion-list *ngIf="listaParticipantes" class="lista-cospobre">
+
+    <ion-item-sliding *ngFor="let participante of listaParticipantes"
+    class="cospobre-item-sliding"
+    #slidingItem>
+
+      <ion-item lines="full"
+      (click)="setModal(true, participante.personagem, participante.imagem, participante.nome)"
+      class=cospobre-item>
 
         <ion-thumbnail slot="start" (click)="setModal(true, participante.personagem, participante.imagem, participante.nome)">
           <img [src]="getImageUrl(participante)" [alt]="participante.personagem" />
-          <ion-modal [isOpen]="isModalOpen">
+          <ion-modal [isOpen]="isModalOpen" (didDismiss)="isModalOpen = false">
             <ng-template>
               <ion-header>
                 <ion-toolbar>
-                  <ion-title class="ion-text-center">Personagem</ion-title>
+                  <ion-title class="ion-text-lef">Personagem</ion-title>
                   <ion-buttons slot="end">
-                    <ion-button (click)="setModal(false)">Fechar</ion-button>
+                    <ion-button type="submit" form="formNotas" class="custom-button">Salvar</ion-button>
                   </ion-buttons>
                 </ion-toolbar>
               </ion-header>
-              <ion-content class="ion-padding">
+              <ion-content [fullscreen]="false" class="modal-inner-content">
                 <div class="modal-content">
                   <img [src]="imagem" [alt]="personagem" class="modal-image" />
                   <h1 style="text-align: center;">{{ personagem }}</h1>
-                  <h2 style="text-align: center; color: #666;">{{ nome }}</h2>
+                  <h2 style="text-align: center;">{{ nome }}</h2>
 
-                  <form [formGroup]="formCadastroNotas" (ngSubmit)="buscaNotasEAltera()" novalidate>
+                  <form [formGroup]="formCadastroNotas"
+                    (ngSubmit)="buscaNotasEAltera()"
+                    novalidate
+                    id="formNotas">
 
                     <ion-item lines="full" class="ion-no-padding">
                       <ion-label position="floating">Criatividade (0-10)</ion-label>
@@ -95,16 +117,6 @@
                         <small *ngIf="errorControl['desenvolvimento'].errors?.['pattern']">Use formato válido (ex: 7.5)</small>
                       </ion-text>
                     </ion-item>
-
-                    <ion-button
-                      expand="full"
-                      fill="outline"
-                      color="primary"
-                      type="submit"
-                      class="ion-margin-top">
-                      Cadastrar Notas
-                    </ion-button>
-
                   </form>
                 </div>
               </ion-content>
@@ -120,27 +132,36 @@
         </ion-label>
 
         <div class="audio-controls">
-          <ion-button size="small" (click)="reproduzirAudio(participante.som)" fill="clear">
+          <ion-button size="small" (click)="reproduzirAudio(participante.som); $event.stopPropagation()"
+          fill="clear">
             <ion-icon name="play"></ion-icon>
           </ion-button>
-          <ion-button size="small" (click)="pausarAudio()" fill="clear">
+          <ion-button size="small" (click)="pausarAudio(); $event.stopPropagation()"
+          fill="clear">
             <ion-icon name="pause"></ion-icon>
           </ion-button>
-          <ion-button size="small" (click)="pararAudio()" fill="clear">
+          <ion-button size="small" (click)="pararAudio() ; $event.stopPropagation()"
+          fill="clear">
             <ion-icon name="stop"></ion-icon>
           </ion-button>
         </div>
 
       </ion-item>
 
+      <ion-item-options side="end">
+        <ion-item-option color="danger" (click)="excluirParticipante(slidingItem, participante)">
+          <ion-icon slot="icon-only" name="trash"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+
     </ion-item-sliding>
 
   </ion-list>
 
-  <div *ngIf="!listaParticipantes || listaParticipantes.length === 0" class="ion-padding ion-text-center">
+  <!--<div *ngIf="!listaParticipantes || listaParticipantes.length === 0" class="ion-padding ion-text-center">
     <ion-text color="medium">
       <p>Nenhum participante encontrado</p>
     </ion-text>
-  </div>
+  </div>!-->
 
 </ion-content>

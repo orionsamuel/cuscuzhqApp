@@ -1,5 +1,5 @@
-ion-content {
-  --background: var(--ion-color-cuscuz);
+.cadastrar-container {
+  margin-top: 75px;
 }
 
 .center {
@@ -10,6 +10,11 @@ ion-content {
   padding: 20px;
 }
 
+ion-content {
+  --padding-bottom: 0 !important;
+  --offset-bottom: 0 !important;
+}
+
 form {
   width: 100%;
   height: 50%;
@@ -18,6 +23,18 @@ form {
   border-radius: 16px;
   padding: 20px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.custom-title {
+  font-size: clamp(1rem, 10vw, 2rem);
+  font-weight: bold;
+  letter-spacing: -2px;
+  margin-top: 75px;
+  margin-left: 10px;
+  white-space: nowrap;
+  text-overflow: clip;
+  line-height: 1;
+  display: inline-block;
 }
 
 ion-item {
@@ -55,19 +72,25 @@ ion-button {
   }
 }
 
-ion-item[lines="none"] {
-  --min-height: 30px;
-  margin-top: -10px;
-  margin-bottom: 5px;
-
-  ion-text {
-    font-size: 12px;
-  }
-}
-
 @media (prefers-color-scheme: dark) {
   form {
-    background: rgba(0, 0, 0, 0.8);
+    background:  var(--ion-color-cuscuz-preto);
+  }
+
+  .center {
+    background:  var(--ion-color-cuscuz-preto);
+  }
+
+  ion-title{
+    color: white;
+  }
+
+  ion-header{
+    background:  var(--ion-color-cuscuz-preto);
+  }
+
+  ion-content {
+    background:  var(--ion-color-cuscuz-preto) !important;
   }
 
   ion-item {
@@ -96,5 +119,180 @@ ion-item[lines="none"] {
       --background: var(--ion-color-light);
       --color: var(--ion-color-dark);
     }
+  }
+
+  .custom-dropdown {
+    background: var(--ion-color-cuscuz-preto) !important;
+  }
+
+  span.selected-text{
+    color: white !important;
+  }
+
+  .dropdown-option{
+    background: var(--ion-color-cuscuz-preto) !important;
+    color: white !important;
+    border-bottom: 1px solid var(--ion-color-dark-tint) !important;
+
+    &:last-child {
+      border-bottom: none !important;
+    }
+  }
+
+  .inner-scroll scroll-y{
+    background: var(--ion-color-cuscuz-preto) !important;
+  }
+
+}
+
+.cadastrar-container {
+  display: flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 16px;
+
+  .cadastrar-text {
+    color: #758fff;
+    font-size: 20px;
+    font-weight: 500;
+    cursor: pointer;
+    line-height: 44px;
+    height: 44px;
+    padding: 0 8px;
+
+    &:hover:not(.disabled) {
+      color: var(--ion-color-primary);
+    }
+
+    &.disabled {
+      color: rgba(255, 255, 255, 0.5);
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+  }
+
+  .spinner {
+    width: 20px;
+    height: 20px;
+    --color: white;
+    margin-right: 8px;
+  }
+}
+
+.custom-dropdown-container {
+  --padding-start: 0 !important;
+  --inner-padding-end: 0 !important;
+  margin: 16px 0;
+  position: relative;
+  z-index: 1000;
+
+  ion-label {
+    color: var(--ion-color-dark);
+    font-weight: 500;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+  }
+}
+
+.custom-dropdown {
+  position: relative;
+  width: 100%;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+
+  &.open {
+    border-color: var(--ion-color-primary);
+    z-index: 1001;
+  }
+}
+
+.dropdown-selected {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  min-height: 44px;
+
+  .selected-text {
+    color: var(--ion-color-dark);
+    font-size: 1rem;
+  }
+
+  .dropdown-icon {
+    color: var(--ion-color-medium);
+    font-size: 1.2rem;
+  }
+}
+
+/* CORREÇÃO PRINCIPAL - Garantir que as opções sejam visíveis */
+.dropdown-options {
+  position: absolute;
+  top: 100% !important;        /* Abaixo do selected */
+  left: -1px !important;       /* Alinha com a borda */
+  right: -1px !important;      /* Alinha com a borda */
+  background: white;
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1002 !important;    /* Mais alto que tudo */
+
+  /* GARANTIR visibilidade */
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  height: auto !important;
+  min-height: 90px; /* Altura mínima para 2 opções */
+  overflow: visible !important;
+}
+
+.dropdown-option {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  color: var(--ion-color-dark);
+  font-size: 1rem;
+  border-bottom: 1px solid var(--ion-color-light);
+  cursor: pointer;
+  height: 45px; /* Altura fixa para cada opção */
+  box-sizing: border-box;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: var(--ion-color-light);
+  }
+}
+
+/* REMOVER overflow hidden de elementos pais */
+ion-content,
+ion-list,
+ion-item,
+.form-container {
+  overflow: visible !important;
+}
+
+.custom-dropdown {
+  overflow: visible !important;
+}
+
+/* Garantir que nada esteja escondendo as opções */
+ion-modal,
+ion-content,
+ion-list {
+  contain: none !important;
+  overflow: visible !important;
+}
+
+@keyframes dropdownSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

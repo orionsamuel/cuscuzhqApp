@@ -1,5 +1,6 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import {
   IonHeader,
@@ -9,13 +10,13 @@ import {
   IonItem,
   IonLabel,
   IonInput,
-  IonButton,
   IonToast,
   IonIcon,
-  ToastController,
   IonText,
-  IonRadioGroup,
-  IonRadio
+  //IonSelect,
+  //IonSelectOption,
+  IonSpinner,
+  //IonList
 } from '@ionic/angular/standalone';
 import { InscritosService } from '../services/inscritos.service';
 import { IInscritos } from '../models/IInscritos.model';
@@ -36,21 +37,22 @@ import { IInscritos } from '../models/IInscritos.model';
     IonItem,
     IonLabel,
     IonInput,
-    IonButton,
     IonToast,
     IonIcon,
     IonText,
-    IonRadioGroup,
-    IonRadio
+    //IonSelect,
+    //IonSelectOption,
+    IonSpinner,
+    //IonList
   ]
 })
 
 export class Tab2Page implements OnInit {
-  private toastController = inject(ToastController);
   private formBuilder = inject(FormBuilder);
   private inscritosService = inject(InscritosService);
+  private router = inject(Router);
 
-  titulo = 'Cadastrar Participante';
+  titulo = 'Novo participante';
   formCadastro: FormGroup;
   isSubmitted = false;
   showToast = false;
@@ -58,13 +60,14 @@ export class Tab2Page implements OnInit {
   toastColor = 'success';
   inscrito: any = {};
   diaSelecionado: string = '';
+  isLoading = false;
+  isDropdownOpen = false;
 
   constructor() {
     this.formCadastro = this.formBuilder.group({
       nome: ['', [Validators.required, Validators.minLength(2)]],
       telefone: ['', [Validators.required, Validators.pattern('^[0-9]{11}$')]],
-      email: ['', [Validators.required, Validators.pattern('[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$')]],
-      diaSelecionado: ['', Validators.required]
+      email: ['', [Validators.required, Validators.pattern('[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$')]]
     });
   }
 
@@ -75,25 +78,58 @@ export class Tab2Page implements OnInit {
   ngOnInit() {
   }
 
-  onDiaChange(event: any) {
-    this.diaSelecionado = event.detail.value;
+  toggleDropdown() {
+    this.isDropdownOpen = !this.isDropdownOpen;
   }
+
+  selectOption(value: string) {
+    console.log('Opção selecionada:', value);
+    this.diaSelecionado = value;
+    this.formCadastro.patchValue({ diaSelecionado: value });
+    this.isDropdownOpen = false;
+
+    this.inscrito.presente1 = value === 'dia1';
+    this.inscrito.presente2 = value === 'dia2';
+  }
+
+  @HostListener('document:click', ['$event'])
+    onDocumentClick(event: Event) {
+      if (this.isDropdownOpen) {
+        const dropdownElement = document.querySelector('.custom-dropdown');
+        const clickedElement = event.target as HTMLElement;
+
+        console.log('Clicou fora?', !dropdownElement?.contains(clickedElement));
+
+        if (dropdownElement && !dropdownElement.contains(clickedElement)) {
+          this.isDropdownOpen = false;
+          console.log('Dropdown fechado');
+        }
+      }
+    }
 
   cadastro() {
     this.isSubmitted = true;
+    this.isLoading = true;
+
+    if (!this.diaSelecionado) {
+      this.isLoading = false;
+      this.presentToast('Selecione um dia', 'danger');
+      return;
+    }
 
     if (!this.formCadastro.valid) {
+      this.isLoading = false;
       console.log('Formulário inválido');
       this.presentToast('Por favor, preencha o formulário corretamente', 'danger');
       return;
     }
 
-    this.inscrito.nome =  this.formCadastro.value.nome;
+    this.inscrito.nome = this.formCadastro.value.nome;
     this.inscrito.telefone = this.formCadastro.value.telefone;
     this.inscrito.email = this.formCadastro.value.email;
     this.inscrito.edicao = this.inscritosService.edicao.id || 1;
-    this.inscrito.presente1 = this.formCadastro.value.diaSelecionado === 'dia1';
-    this.inscrito.presente2 = this.formCadastro.value.diaSelecionado === 'dia2';
+    this.inscrito.presente1 = this.diaSelecionado === 'dia1';
+    this.inscrito.presente2 = this.diaSelecionado === 'dia2';
     this.inscrito.sorteado = false;
 
     console.log('Dados do inscrito:', this.inscrito);
@@ -102,8 +138,13 @@ export class Tab2Page implements OnInit {
       next: (dados) => {
         console.log('Cadastro realizado:', dados);
         this.presentToast('Cadastrado com sucesso!', 'success');
-        this.formCadastro.reset();
-        this.isSubmitted = false;
+        setTimeout(() => {
+          this.formCadastro.reset();
+          this.diaSelecionado = '';
+          this.isSubmitted = false;
+          this.isLoading = false;
+          this.router.navigate(['/tabs/tab1']);
+        }, 2100);
       },
       error: (erro) => {
         console.error('Erro no cadastro:', erro);
@@ -112,13 +153,21 @@ export class Tab2Page implements OnInit {
     });
   }
 
-  async presentToast(texto: string, cor: string) {
-    this.toastMessage = texto;
-    this.toastColor = cor;
-    this.showToast = true;
+private presentToast(mensagem: string, cor: string) {
+  this.toastMessage = mensagem;
+  this.toastColor = cor;
+  this.showToast = true;
+  console.log("Caiu no toast");
+}
 
-    setTimeout(() => {
-      this.showToast = false;
-    }, 2000);
+  handleKeydown(event: KeyboardEvent) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      this.toggleDropdown();
+    }
+
+    if (event.key === 'Escape') {
+      this.isDropdownOpen = false;
+    }
   }
 }

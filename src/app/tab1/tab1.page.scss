@@ -1,29 +1,346 @@
-ion-item{
+.search-container {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  margin-left: 10px;
+  margin-right: 10px;
 
-  --padding-start: 10px;
-  --inner-padding-end: 10px;
-
-  ion-icon{
-    font-size: 48px;
-    color: #dcdcdc;
+  ion-searchbar {
+    flex: 1;
+    padding: 0;
   }
-
-   h1{
-     font-weight: bold;
-     font-size: 1.0rem;
-     text-align: center;
-   }
-
-   p{
-     font-size: 0.6rem;
-     text-align: center;
-   }
-
-   p + p{
-     color: #8a8a8a;
-   }
 }
 
-ion-list{
-  background-color: #fff47d;
+.custom-title {
+  font-size: clamp(1rem, 10vw, 2rem);
+  font-weight: bold;
+  letter-spacing: -2px;
+  margin-top: 75px;
+  margin-left: 10px;
+  white-space: nowrap;
+  text-overflow: clip;
+  line-height: 1;
+  display: inline-block;
+}
+
+ion-header {
+  ion-button {
+    margin-top: 75px;
+    margin-right: 10px;
+  }
+
+  ion-icon {
+    height: 34px;
+    width: 34px;
+    color: var(--ion-color-dark);
+  }
+}
+
+ion-searchbar {
+  --background: var(--ion-color-light-shade);
+  --border-radius: 19px;
+  --box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  --color: var(--ion-color-dark);
+  --icon-color: var(--ion-color-dark);
+  --placeholder-color: var(--ion-color-dark);
+  --placeholder-opacity: 0.8;
+
+  .searchbar-input-container {
+    .searchbar-input {
+      border: 2px solid var(--ion-color-primary) !important;
+    }
+  }
+}
+
+.inscrito-item {
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --min-height: 80px;
+
+  ion-avatar {
+    margin-right: 16px;
+
+    ion-icon {
+      font-size: 32px;
+      color: var(--ion-color-medium);
+    }
+  }
+
+  h2 {
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  p {
+    margin: 2px 0;
+    font-size: 0.9rem;
+    color: var(--ion-color-medium);
+  }
+}
+
+.presenca-badges {
+  margin-top: 8px;
+
+  ion-badge {
+    margin-right: 8px;
+    font-size: 0.8rem;
+  }
+}
+
+.modal-content {
+  padding: 20px;
+  text-align: center;
+
+  h2 {
+    margin-bottom: 20px;
+    color: var(--ion-color-dark);
+    font-size: 1.5rem;
+    font-weight: bold !important;
+  }
+}
+
+.modal-actions {
+  margin-top: 20px;
+  padding: 0 16px;
+}
+
+ion-list {
+  background: white;
+}
+
+ion-item.inscrito-item {
+  margin-left: 10px;
+  margin-right: 10px;
+  width: 90%;
+}
+
+ion-card {
+  margin: 20px;
+
+  ion-card-content {
+    padding: 20px;
+  }
+}
+
+ion-modal {
+  ion-card-content {
+    border-radius: 19px;
+  }
+}
+
+ion-content {
+  background: var(--ion-color-light);
+}
+
+ion-modal {
+  --width: 95%;
+  --max-width: 380px;
+  --height: 20.7rem;
+  --background-color: #fff;
+  --border-radius: 19px !important;
+
+  ion-icon {
+    height: 24px;
+    width: 24px;
+  }
+}
+
+.modal-content {
+  padding: 15px;
+  background: #fff;
+}
+
+.modal-content-wrapper {
+  --background: var(--ion-background-color, #ffffff) !important;
+}
+
+ion-card {
+  border-radius: 19px !important;
+  background: #fff;
+  margin: 10px;
+  padding: 15px;
+}
+
+ion-content {
+  overflow: visible !important;
+
+  .inner-scroll {
+    overflow: visible !important;
+  }
+}
+
+.center {
+  padding-top: 10px;
+  margin-top: 10px;
+  background: white;
+}
+
+ion-refresher {
+  z-index: 0 !important;
+  background: #fff;
+}
+
+.checkboxes-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+  margin: 8px 0;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  ion-checkbox {
+    --size: 20px;
+    --border-width: 2px;
+    --border-color: var(--ion-color-medium);
+    --border-color-checked: var(--ion-color-primary);
+    --background-checked: var(--ion-color-primary);
+    order: 1;
+    margin: 0;
+  }
+
+  .checkbox-text {
+    order: 2;
+    font-size: 0.9rem;
+    color: var(--ion-color-dark);
+    white-space: nowrap;
+  }
+}
+
+.checkbox-row ion-checkbox[checked] {
+  ~ .checkbox-text {
+    color: var(--ion-color-primary);
+    font-weight: 500;
+  }
+}
+
+ion-item {
+  .checkboxes-column {
+    margin-left: 0;
+    text-align: left;
+    width: 100%;
+  }
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  justify-content: center;
+  padding: 40px;
+  text-align: center;
+
+  ion-spinner {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 16px;
+    --color: var(--ion-color-cuscuz-preto);
+  }
+
+  p {
+    color: var(--ion-color-medium);
+    margin: 0;
+  }
+}
+
+
+@media (prefers-color-scheme: dark) {
+.loading-container {
+  ion-spinner {
+    --color: white;
+  }
+}
+
+  ion-title{
+    color: white;
+  }
+
+  ion-header{
+    background:  var(--ion-color-cuscuz-preto);
+  }
+
+  .search-container {
+    background:  var(--ion-color-cuscuz-preto) !important;
+
+    ion-searchbar {
+      flex: 1;
+      padding: 0;
+    }
+  }
+
+  ion-toolbar {
+    --background: var(--ion-color-cuscuz-preto);
+    --color: white;
+  }
+
+  ion-content {
+    --background: var(--ion-color-cuscuz-preto) !important;
+  }
+
+  ion-modal ion-content {
+    --background: var(--ion-color-cuscuz-preto) !important;
+  }
+
+  .modal-content {
+    background: var(--ion-color-cuscuz-preto) !important;
+
+    ion-item {
+      --background:var(--ion-color-cuscuz-preto) !important;
+    }
+
+    h2 {
+      color: white;
+    }
+
+    .checkbox-text {
+      color: white;
+    }
+  }
+
+  .center {
+    background:  var(--ion-color-cuscuz-preto) !important;
+  }
+
+  ion-item.inscrito-item {
+    --background:var(--ion-color-cuscuz-preto) !important;
+    --color: white;
+  }
+
+  ion-icon {
+    color: var(--ion-color-light) !important;
+  }
+
+  ion-label {
+    color: var(--ion-color-light) !important;
+  }
+
+  ion-input {
+    --color: white;
+    --placeholder-color: rgba(255, 255, 255, 0.6);
+  }
+
+  ion-button {
+    --border-color: var(--ion-color-light) !important;
+    --color: var(--ion-color-light);
+
+    &:hover {
+      --background: var(--ion-color-light);
+      --color: var(--ion-color-dark);
+    }
+  }
+
+  ion-list {
+  background: var(--ion-color-cuscuz-preto) !important;
+}
+
+  ion-refresher {
+    z-index: 0 !important;
+    background: var(--ion-color-cuscuz-preto) !important;
+  }
 }

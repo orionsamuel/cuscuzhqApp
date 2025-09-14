@@ -35,6 +35,14 @@ export class CospobreService {
     );
   }
 
+  deletarParticipante(participante: any, edicao: number): Observable<any>{
+    const url = `${this.apiURL}${edicao}/${participante.id}`;
+    return this.http.delete(`${url}/`).pipe(
+      map(retorno => retorno),
+      catchError(erro => this.exibirErro(erro))
+    );
+  }
+
   private async exibirErro(erro: any): Promise<null> {
     console.error('Erro ao consultar a API:', erro);
 

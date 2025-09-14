@@ -22,7 +22,13 @@ import {
   Platform,
   IonThumbnail,
   IonItemSliding,
-  IonButtons
+  IonItemOptions,
+  IonItemOption,
+  AlertController,
+  IonButtons,
+  IonSpinner,
+  IonRefresher,
+  IonRefresherContent
 } from '@ionic/angular/standalone';
 
 import { CospobreService } from '../services/cospobre.service';
@@ -53,10 +59,16 @@ import { ImageCacheService } from '../services/image-cache.service';
     IonModal,
     IonThumbnail,
     IonItemSliding,
-    IonButtons
+    IonItemOptions,
+    IonItemOption,
+    IonButtons,
+    IonSpinner,
+    IonRefresher,
+    IonRefresherContent
   ]
 })
 export class Tab3Page implements OnInit {
+  private alertController = inject(AlertController);
   private formBuilder = inject(FormBuilder);
   private http = inject(HttpClient);
   private cospobreService = inject(CospobreService);
@@ -68,6 +80,7 @@ export class Tab3Page implements OnInit {
   private platform = inject(Platform);
   private cdr = inject(ChangeDetectorRef);
 
+  titulo = 'Cospobres';
   formCadastroNotas!: FormGroup;
   isSubmitted = false;
   isCosplay = true;
@@ -82,6 +95,7 @@ export class Tab3Page implements OnInit {
   musica!: HTMLAudioElement;
   posicaoReproducao = 0;
   cachedImages: { [key: string]: string } = {};
+  isLoading = false;
 
   constructor() {
     this.platform.ready().then(() => {
@@ -121,6 +135,7 @@ export class Tab3Page implements OnInit {
   }
 
   async init() {
+    this.isLoading = true;
     try {
       await this.buscarEdicao();
 
@@ -129,6 +144,8 @@ export class Tab3Page implements OnInit {
       await this.cacheImagesForParticipants();
     } catch (error) {
       console.error('Erro ao inicializar dados:', error);
+    } finally{
+      this.isLoading = false
     }
   }
 
@@ -225,23 +242,24 @@ export class Tab3Page implements OnInit {
         this.presentToast('Notas Cadastradas Com Sucesso', 'success');
         this.formCadastroNotas.reset();
         this.isSubmitted = false;
+        this.isModalOpen = false;
       },
       error: (erro) => {
         console.error('❌ Erro no cadastro de notas:', erro);
         this.presentToast('Erro ao cadastrar notas. Tente novamente.', 'danger');
       }
     });
-
-    this.formCadastroNotas.reset();
   }
 
-  async buscarParticipante() {
+  async buscarParticipante(event?: any) {
     try {
       const participantes = await this.cospobreService.buscarParticipante(this.edicao, this.isCosplay).toPromise();
       console.log(participantes);
       this.listaParticipantes = participantes;
     } catch (error) {
       console.error('Erro ao buscar participantes:', error);
+    } finally {
+      event.target.complete();
     }
   }
 
@@ -275,6 +293,34 @@ export class Tab3Page implements OnInit {
     });
   }
 
+  async excluirParticipante(slidingItem: IonItemSliding, participante: any) {
+    if (!participante) return;
+
+    const alert = await this.alertController.create({
+      header: 'Confirmar Exclusão',
+      message: `Deseja excluir o participante ${participante.nome}?`,
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {
+            slidingItem.close();
+          }
+        }, {
+          text: 'Excluir',
+          role: 'destructive',
+          handler: () => {
+            this.confirmarExclusao(participante);
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+
   reproduzirAudio(musicaUrl: string) {
     if (this.musica) {
       this.musica.pause();
@@ -302,9 +348,27 @@ export class Tab3Page implements OnInit {
 
   setModal(isOpen: boolean, personagem?: string, imagem?: string, nome?: string) {
     this.isModalOpen = isOpen;
-    if (personagem) this.personagem = personagem;
-    if (imagem) this.imagem = imagem;
-    if (nome) this.nome = nome;
+    if (isOpen) {
+      this.personagem = personagem || '';
+      this.imagem = imagem || '';
+      this.nome = nome || '';
+    }
+  }
+
+  async confirmarExclusao(participante: any) {
+    if (!participante) return;
+
+    this.cospobreService.deletarParticipante(participante, this.edicao).subscribe({
+      next: (dados) => {
+        console.log('Inscrito excluído:', dados);
+        this.presentToast('Inscrito excluído com sucesso!', 'success');
+        this.init();
+      },
+      error: (erro) => {
+        console.error('Erro ao excluir inscrito:', erro);
+        this.presentToast('Erro ao excluir inscrito', 'danger');
+      }
+    });
   }
 
   async presentToast(texto: string, cor: string) {

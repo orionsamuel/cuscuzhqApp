@@ -35,3 +35,45 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
+
+root {
+  --ion-font-family: 'Roboto', sans-serif;
+}
+
+* {
+  font-family: 'Roboto', sans-serif;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+ion-content, ion-header, ion-footer, ion-title, ion-label, ion-button, ion-input, ion-text, ion-item, h1, h2, h3, h4, h5, h6, p, span, div {
+  font-family: 'Roboto', sans-serif !important;
+}
+
+ion-tab-bar {
+  --border-width: 0 !important;
+  --border-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+ion-tab-bar::after {
+  display: none !important;
+  content: none !important;
+}
+
+ion-tab-bar {
+  border-top: none !important;
+  box-shadow: none !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  ion-tab-bar {
+    --border-width: 0 !important;
+    --border-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    }
+}

@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { ToastController } from '@ionic/angular/standalone';
 
@@ -17,6 +17,9 @@ export class InscritosService {
 
   private options: any = { headers: new HttpHeaders({'Content-Type': 'application/json'})};
 
+  private inscritoCadastradoSource = new Subject<void>();
+  inscritoCadastrado$ = this.inscritoCadastradoSource.asObservable();
+
   constructor() {
     this.buscarEdicao().subscribe(dados => {
       console.log(dados);
@@ -32,11 +35,22 @@ export class InscritosService {
     );
   }
 
+  buscarTodosInscritos(): Observable<any> {
+    const url = `${this.apiURL}${this.edicao}/`;
+    return this.http.get<any>(url).pipe(
+      map(retorno => retorno),
+      catchError(erro => this.exibirErro(erro))
+    );
+  }
+
   cadastrarInscrito(inscrito: any){
     console.log("Inscrito cadastrado dento do service: ", inscrito);
     const url = `${this.apiURL}${this.edicao}`;
     return this.http.post(`${url}/`, JSON.stringify(inscrito), this.options).pipe(
-      map(retorno => retorno),
+      map(retorno => {
+        this.notificarInscritoCadastrado();
+        return retorno;
+      }),
       catchError(erro => this.exibirErro(erro))
     );
   }
@@ -44,6 +58,14 @@ export class InscritosService {
   atualizarPresenca(inscrito: any): Observable<any>{
     const url = `${this.apiURL}${this.edicao}/${inscrito.id}`;
     return this.http.put(`${url}/`, JSON.stringify(inscrito), this.options).pipe(
+      map(retorno => retorno),
+      catchError(erro => this.exibirErro(erro))
+    );
+  }
+
+  deletarInscrito(inscrito: any): Observable<any>{
+    const url = `${this.apiURL}${this.edicao}/${inscrito.id}`;
+    return this.http.delete(`${url}/`).pipe(
       map(retorno => retorno),
       catchError(erro => this.exibirErro(erro))
     );
@@ -68,5 +90,10 @@ export class InscritosService {
     toast.present();
 
     return null;
+  }
+
+  notificarInscritoCadastrado() {
+    console.log('Emitindo evento de inscrito cadastrado');
+    this.inscritoCadastradoSource.next();
   }
 }

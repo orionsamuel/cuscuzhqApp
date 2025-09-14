@@ -1,8 +1,18 @@
-<ion-header [translucent]="true">
-  <ion-toolbar color="dark">
-    <ion-title class="ion-text-center">
-      {{titulo}}
+<ion-header [translucent]="true" class="ion-no-border">
+  <ion-toolbar color="cuscuz">
+    <ion-title class="ion-text-left">
+      <ion-text class="custom-title">{{titulo}}</ion-text>
     </ion-title>
+
+    <div slot="end" class="cadastrar-container">
+      <ion-spinner *ngIf="isLoading" name="crescent" class="spinner"></ion-spinner>
+      <span
+        *ngIf="!isLoading"
+        (click)="cadastro()"
+        class="cadastrar-text">
+        Cadastrar
+      </span>
+    </div>
   </ion-toolbar>
 </ion-header>
 
@@ -60,34 +70,33 @@
         </ion-text>
       </ion-item>
 
-      <!-- Radio Buttons para seleção de dia -->
-      <ion-item lines="full">
-        <ion-icon name="calendar" slot="start"></ion-icon>
-        <ion-label>Selecione o dia:</ion-label>
+      <ion-item lines="none" class="custom-dropdown-container">
+        <ion-label position="stacked">Dia de cadastro:</ion-label>
+
+        <div class="custom-dropdown" [class.open]="isDropdownOpen">
+          <div class="dropdown-selected" (click)="toggleDropdown()">
+            <span class="selected-text">
+              {{ diaSelecionado ? (diaSelecionado === 'dia1' ? 'Dia 1' : 'Dia 2') : 'Selecione' }}
+            </span>
+            <ion-icon [name]="isDropdownOpen ? 'chevron-up' : 'chevron-down'" class="dropdown-icon"></ion-icon>
+          </div>
+
+          <div class="dropdown-options" *ngIf="isDropdownOpen">
+            <div class="dropdown-option" (click)="selectOption('dia1')">
+              Dia 1
+            </div>
+            <div class="dropdown-option" (click)="selectOption('dia2')">
+              Dia 2
+            </div>
+          </div>
+        </div>
       </ion-item>
 
-      <ion-radio-group formControlName="diaSelecionado" (ionChange)="onDiaChange($event)">
-        <ion-item lines="none">
-          <ion-radio slot="start" value="dia1"></ion-radio>
-          <ion-label>Dia 1</ion-label>
-        </ion-item>
-
-        <ion-item lines="none">
-          <ion-radio slot="start" value="dia2"></ion-radio>
-          <ion-label>Dia 2</ion-label>
-        </ion-item>
-      </ion-radio-group>
-
-      <ion-item *ngIf="errorControl['diaSelecionado'].invalid && isSubmitted" lines="none">
+      <ion-item *ngIf="isSubmitted && !diaSelecionado" lines="none">
         <ion-text color="danger">
-          <small *ngIf="errorControl['diaSelecionado'].errors?.['required']">Selecione um dia</small>
+          <small>Selecione um dia</small>
         </ion-text>
       </ion-item>
-
-      <!-- Botão de Cadastro -->
-      <ion-button expand="full" fill="outline" type="submit" class="ion-margin-top">
-        Cadastrar
-      </ion-button>
 
     </form>
 
@@ -98,7 +107,8 @@
     [isOpen]="showToast"
     [message]="toastMessage"
     [color]="toastColor"
-    [duration]="2000">
+    [duration]="2000"
+    (didDismiss)="showToast = false">
   </ion-toast>
 
 </ion-content>
