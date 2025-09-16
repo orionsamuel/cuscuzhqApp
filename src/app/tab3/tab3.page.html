@@ -6,7 +6,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" color="cuscuz">
+<ion-content [fullscreen]="false" color="cuscuz">
 
   <ion-refresher slot="fixed" (ionRefresh)="buscarParticipante($event)">
     <ion-refresher-content
@@ -18,9 +18,9 @@
   </ion-refresher>
 
   <div *ngIf="isLoading" class="loading-container ion-padding ion-text-center">
-      <ion-spinner name="crescent"></ion-spinner>
-      <p>Carregando inscritos...</p>
-    </div>
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Atualizando...</p>
+  </div>
 
   <ion-list *ngIf="listaParticipantes" class="lista-cospobre">
 
@@ -157,11 +157,5 @@
     </ion-item-sliding>
 
   </ion-list>
-
-  <!--<div *ngIf="!listaParticipantes || listaParticipantes.length === 0" class="ion-padding ion-text-center">
-    <ion-text color="medium">
-      <p>Nenhum participante encontrado</p>
-    </ion-text>
-  </div>!-->
 
 </ion-content>

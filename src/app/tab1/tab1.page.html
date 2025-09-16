@@ -5,7 +5,7 @@
     </ion-title>
 
     <ion-buttons slot="end">
-      <ion-button (click)="navegarParaCadastro()" color="primary">
+      <ion-button (click)="navegarParaCadastro()" class="cadastrarButton">
         <ion-icon name="add-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -29,106 +29,114 @@
 
 <ion-content [fullscreen]="false" color="cuscuz">
 
-  <!--<ion-refresher slot="fixed" (ionRefresh)="carregarTodosInscritos($event)">
+  <ion-refresher
+    slot="fixed"
+    (ionRefresh)="carregarTodosInscritos($event)"
+    (ionPull)="ativarMargin()">
     <ion-refresher-content
       pullingIcon="arrow-down-outline"
       refreshingSpinner="crescent"
       pullingText="Puxe para atualizar"
       refreshingText="Atualizando...">
     </ion-refresher-content>
-  </ion-refresher>!-->
+  </ion-refresher>
 
-  <div *ngIf="isLoading" class="loading-container">
-    <ion-spinner name="crescent"></ion-spinner>
-    <p>Carregando inscritos...</p>
-  </div>
+  <div class="main-content-wrapper" [class.com-margem]="temMargem">
+    <div *ngIf="isLoading" class="loading-container ion-padding ion-text-center">
 
-  <ion-list *ngIf="listaInscritos.length > 0">
-    <ion-item
-      *ngFor="let inscrito of listaInscritos"
-      button
-      (click)="abrirModal(inscrito)"
-      lines="full"
-      class="inscrito-item">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Atualizando...</p>
+    </div>
 
-      <ion-label class="ion-text-wrap">
-        <h2><strong>{{inscrito.nome}}</strong></h2>
-        <p>{{inscrito.email}}</p>
+    <ion-list *ngIf="listaInscritos" class="inscrito-lista">
 
-        <div class="presenca-badges">
-          <ion-badge [color]="inscrito.presente1 ? 'success' : 'medium'">
-            Dia 1: {{inscrito.presente1 ? '✅' : '❌'}}
-          </ion-badge>
-          <ion-badge [color]="inscrito.presente2 ? 'success' : 'medium'">
-            Dia 2: {{inscrito.presente2 ? '✅' : '❌'}}
-          </ion-badge>
-        </div>
-      </ion-label>
-    </ion-item>
-  </ion-list>
+      <ion-item-sliding *ngFor="let inscrito of listaInscritos">
+        <ion-item
+          (click)="abrirModal(inscrito)"
+          lines="full"
+          class="inscrito-item">
 
-  <div class="no-results ion-padding" [hidden]="!(listaInscritos.length === 0 && termoBusca)">
-    <ion-card color="light">
-      <ion-card-header>
-        <ion-card-title class="ion-text-center">
-          <ion-icon name="search-outline" size="large"></ion-icon>
-        </ion-card-title>
-        <ion-card-subtitle class="ion-text-center">
-          Nenhum resultado encontrado
-        </ion-card-subtitle>
-      </ion-card-header>
+          <ion-label class="ion-text-wrap">
+            <h2><strong>{{inscrito.nome}}</strong></h2>
+            <p>{{inscrito.email}}</p>
 
-      <ion-card-content class="ion-text-center">
-        <p>Nenhum inscrito encontrado para "{{termoBusca}}"</p>
-        <ion-button fill="clear" (click)="limparBusca()">Limpar busca</ion-button>
-      </ion-card-content>
-    </ion-card>
-  </div>
+            <div class="presenca-badges">
+              <ion-badge [color]="inscrito.presente1 ? 'success' : 'medium'">
+                Dia 1: {{inscrito.presente1 ? '✅' : '❌'}}
+              </ion-badge>
+              <ion-badge [color]="inscrito.presente2 ? 'success' : 'medium'">
+                Dia 2: {{inscrito.presente2 ? '✅' : '❌'}}
+              </ion-badge>
+            </div>
+          </ion-label>
+        </ion-item>
+      </ion-item-sliding>
 
-  <ion-modal [isOpen]="isModalOpen" (ionModalDidDismiss)="fecharModal()" [canDismiss]="true">
-    <ng-template>
-      <ion-content *ngIf="inscritoSelecionado" class="modal-content-wrapper">
-        <div class="modal-content">
-          <ion-list lines="full">
-            <ion-item>
-              <h2>{{inscritoSelecionado.nome}}</h2>
-              <ion-buttons slot="end">
-                <ion-button expand="block" color="dark" (click)="excluirInscrito()">
-                  <ion-icon name="trash-outline"></ion-icon>
-                </ion-button>
-              </ion-buttons>
-            </ion-item>
-            <ion-item>
-              <ion-icon name="call" slot="start"></ion-icon>
-              <ion-label>{{inscritoSelecionado.telefone}}</ion-label>
-            </ion-item>
-            <ion-item>
-              <ion-icon name="mail" slot="start"></ion-icon>
-              <ion-label>{{inscritoSelecionado.email}}</ion-label>
-            </ion-item>
-            <ion-item lines=none>
-              <div slot="end" class="checkboxes-column">
-                <div class="checkbox-row">
-                  <ion-checkbox
-                    [checked]="inscritoSelecionado.presente1"
-                    (ionChange)="alterarPresenca1()">
-                  </ion-checkbox>
-                  <span class="checkbox-text">Dia 1</span>
+    </ion-list>
+
+    <div class="no-results ion-padding" [hidden]="!(listaInscritos.length === 0 && termoBusca)">
+      <ion-card color="light">
+        <ion-card-header>
+          <ion-card-title class="ion-text-center">
+            <ion-icon name="search-outline" size="large"></ion-icon>
+          </ion-card-title>
+          <ion-card-subtitle class="ion-text-center">
+            Nenhum resultado encontrado
+          </ion-card-subtitle>
+        </ion-card-header>
+
+        <ion-card-content class="ion-text-center">
+          <p>Nenhum inscrito encontrado para "{{termoBusca}}"</p>
+          <ion-button fill="clear" (click)="limparBusca()">Limpar busca</ion-button>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <ion-modal [isOpen]="isModalOpen" (ionModalDidDismiss)="fecharModal()" [canDismiss]="true">
+      <ng-template>
+        <ion-content *ngIf="inscritoSelecionado" class="modal-content-wrapper">
+          <div class="modal-content">
+            <ion-list lines="full">
+              <ion-item>
+                <h2>{{inscritoSelecionado.nome}}</h2>
+                <ion-buttons slot="end">
+                  <ion-button expand="block" color="dark" (click)="excluirInscrito()">
+                    <ion-icon name="trash-outline"></ion-icon>
+                  </ion-button>
+                </ion-buttons>
+              </ion-item>
+              <ion-item>
+                <ion-icon name="call" slot="start"></ion-icon>
+                <ion-label>{{inscritoSelecionado.telefone}}</ion-label>
+              </ion-item>
+              <ion-item>
+                <ion-icon name="mail" slot="start"></ion-icon>
+                <ion-label>{{inscritoSelecionado.email}}</ion-label>
+              </ion-item>
+              <ion-item lines=none>
+                <div slot="end" class="checkboxes-column">
+                  <div class="checkbox-row">
+                    <ion-checkbox
+                      [checked]="inscritoSelecionado.presente1"
+                      (ionChange)="alterarPresenca1()">
+                    </ion-checkbox>
+                    <span class="checkbox-text">Dia 1</span>
+                  </div>
+
+                  <div class="checkbox-row">
+                    <ion-checkbox
+                      [checked]="inscritoSelecionado.presente2"
+                      (ionChange)="alterarPresenca2()">
+                    </ion-checkbox>
+                    <span class="checkbox-text">Dia 2</span>
+                  </div>
                 </div>
-
-                <div class="checkbox-row">
-                  <ion-checkbox
-                    [checked]="inscritoSelecionado.presente2"
-                    (ionChange)="alterarPresenca2()">
-                  </ion-checkbox>
-                  <span class="checkbox-text">Dia 2</span>
-                </div>
-              </div>
-            </ion-item>
-          </ion-list>
-        </div>
-      </ion-content>
-    </ng-template>
-  </ion-modal>
+              </ion-item>
+            </ion-list>
+          </div>
+        </ion-content>
+      </ng-template>
+    </ion-modal>
+  </div>
 
 </ion-content>

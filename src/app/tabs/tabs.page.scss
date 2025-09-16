@@ -1,5 +1,9 @@
+// ion-tab-bar {
+//   padding-bottom: var(--safe-area-inset-bottom);
+// }
+
 ion-tab-bar {
-  padding-bottom: env(safe-area-inset-bottom);
+  background: white;
 }
 
 ion-icon {
@@ -7,15 +11,9 @@ ion-icon {
   width: 34px;
 }
 
-
 .tab-icon {
-  width: 24px;
-  height: 24px;
-  margin-bottom: 4px;
-  object-fit: contain;
-  transition: all 0.3s ease;
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
+  width: 34px;
+  height: 34px;
 }
 
 ion-tab-button.tab-selected {
@@ -29,5 +27,13 @@ ion-tab-button.tab-selected {
 @media (prefers-color-scheme: dark) {
   ion-tab-bar {
     background:  var(--ion-color-cuscuz-preto);
+  }
+
+  ion-icon {
+    color: white !important;
+  }
+
+  .tab-icon {
+    color: white !important;
   }
 }

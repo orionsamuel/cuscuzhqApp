@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
@@ -25,7 +25,10 @@ import {
   IonModal,
   IonButtons,
   IonSpinner,
-  IonText
+  IonText,
+  IonRefresher,
+  IonRefresherContent,
+  IonItemSliding
 } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import { InscritosService } from '../services/inscritos.service';
@@ -59,7 +62,10 @@ import { IInscritos } from '../models/IInscritos.model';
     IonModal,
     IonButtons,
     IonSpinner,
-    IonText
+    IonText,
+    IonRefresher,
+    IonRefresherContent,
+    IonItemSliding
   ]
 })
 export class Tab1Page implements OnInit {
@@ -67,6 +73,9 @@ export class Tab1Page implements OnInit {
   private toastController = inject(ToastController);
   private router = inject(Router);
   private inscritosService = inject(InscritosService);
+
+  @ViewChild('refresher', { static: false, read: IonRefresher })
+  refresher?: IonRefresher;
 
   titulo = 'Inscritos';
   edicao = 0;
@@ -80,6 +89,7 @@ export class Tab1Page implements OnInit {
   inscritoSelecionado: any | null = null;
   termoBusca = '';
   isLoading = false;
+  temMargem = false;
 
   ngOnInit() {
     this.carregarEdicaoEInscritos();
@@ -108,7 +118,16 @@ export class Tab1Page implements OnInit {
     }
   }
 
-  async carregarTodosInscritos(event?: any) {
+  ativarMargin() {
+    this.temMargem = true;
+  }
+
+  removerMargin() {
+    this.temMargem = false;
+    console.log("Removeu margin");
+  }
+
+  async carregarTodosInscritos(event: any = null) {
     if (!this.edicao) {
       console.log('Edição não definida, aguardando...');
 
@@ -136,6 +155,14 @@ export class Tab1Page implements OnInit {
     } catch (error) {
       console.error('Erro ao carregar inscritos:', error);
       this.mostrarToast('Erro ao carregar lista de inscritos', true);
+    } finally {
+      if (event?.target) {
+          event.target.complete();
+      }
+
+      setTimeout(() => {
+        this.removerMargin();
+      }, 1000);
     }
   }
 

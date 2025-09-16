@@ -27,12 +27,17 @@ ion-header {
   ion-button {
     margin-top: 75px;
     margin-right: 10px;
+    background: var(--ion-color-light-shade);
   }
 
   ion-icon {
     height: 34px;
     width: 34px;
     color: var(--ion-color-dark);
+  }
+
+  .cadastrarButton {
+    background: white;
   }
 }
 
@@ -50,6 +55,11 @@ ion-searchbar {
       border: 2px solid var(--ion-color-primary) !important;
     }
   }
+}
+
+.inscrito-lista {
+  margin-top: 0;
+  padding-top: 0;
 }
 
 .inscrito-item {
@@ -128,10 +138,6 @@ ion-modal {
   }
 }
 
-ion-content {
-  background: var(--ion-color-light);
-}
-
 ion-modal {
   --width: 95%;
   --max-width: 380px;
@@ -162,11 +168,14 @@ ion-card {
 }
 
 ion-content {
-  overflow: visible !important;
+  overflow: auto !important;
 
   .inner-scroll {
-    overflow: visible !important;
+    overflow-y: auto !important;
+    will-change: transform;
   }
+
+  background: white;
 }
 
 .center {
@@ -176,7 +185,7 @@ ion-content {
 }
 
 ion-refresher {
-  z-index: 0 !important;
+  z-index: 10 !important;
   background: #fff;
 }
 
@@ -226,6 +235,16 @@ ion-item {
   }
 }
 
+.main-content-wrapper {
+  transition: margin-top 0.3s ease;
+  position: relative;
+  min-height: 100%;
+}
+
+.main-content-wrapper.com-margem {
+  margin-top: 45px;
+}
+
 .loading-container {
   display: flex;
   flex-direction: column;
@@ -251,18 +270,23 @@ ion-item {
 
 
 @media (prefers-color-scheme: dark) {
-.loading-container {
-  ion-spinner {
-    --color: white;
+  .loading-container {
+    ion-spinner {
+      --color: white;
+    }
   }
-}
 
   ion-title{
     color: white;
   }
 
   ion-header{
-    background:  var(--ion-color-cuscuz-preto);
+    background: var(--ion-color-cuscuz-preto);
+
+    .cadastrarButton {
+      background: var(--ion-color-cuscuz-preto);
+
+    }
   }
 
   .search-container {
@@ -281,6 +305,7 @@ ion-item {
 
   ion-content {
     --background: var(--ion-color-cuscuz-preto) !important;
+    background: var(--ion-color-cuscuz-preto) !important;
   }
 
   ion-modal ion-content {
@@ -336,11 +361,18 @@ ion-item {
   }
 
   ion-list {
-  background: var(--ion-color-cuscuz-preto) !important;
-}
+    background: var(--ion-color-cuscuz-preto) !important;
+  }
+
+  p {
+    color: white !important;
+  }
 
   ion-refresher {
-    z-index: 0 !important;
+    background: var(--ion-color-cuscuz-preto) !important;
+  }
+
+  body{
     background: var(--ion-color-cuscuz-preto) !important;
   }
 }

@@ -251,7 +251,7 @@ export class Tab3Page implements OnInit {
     });
   }
 
-  async buscarParticipante(event?: any) {
+  async buscarParticipante(event: any = null) {
     try {
       const participantes = await this.cospobreService.buscarParticipante(this.edicao, this.isCosplay).toPromise();
       console.log(participantes);
@@ -259,7 +259,9 @@ export class Tab3Page implements OnInit {
     } catch (error) {
       console.error('Erro ao buscar participantes:', error);
     } finally {
-      event.target.complete();
+      if (event?.target) {
+        event.target.complete();
+      }
     }
   }
 
