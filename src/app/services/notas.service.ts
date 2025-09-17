@@ -34,6 +34,17 @@ export class NotasService {
     );
   }
 
+  buscarNotaById(edicao: number, id: number): Observable<any> {
+    this.apiURL = 'https://cuscuzhq.alwaysdata.net/inscricao/v1/notascospobre/';
+
+    const url = `${this.apiURL}${edicao}/${id}/`;
+
+    return this.http.get<any>(url).pipe(
+      map(retorno => retorno),
+      catchError(erro => this.exibirErro(erro))
+    );
+  }
+
   atualizarNotas(notas: any, edicao: number, isCosplay: boolean): Observable<any> {
     if (isCosplay) {
       this.apiURL = 'https://cuscuzhq.alwaysdata.net/inscricao/v1/notascospobre/';
@@ -51,6 +62,16 @@ export class NotasService {
       catchError(erro => {
         return this.exibirErro(erro);
       })
+    );
+  }
+
+  deletarNota(nota: any, edicao: number): Observable<any>{
+    this.apiURL = 'https://cuscuzhq.alwaysdata.net/inscricao/v1/notascospobre/';
+    const url = `${this.apiURL}${edicao}/${nota.id}/`;
+    console.log(url);
+    return this.http.delete(url).pipe(
+      map(retorno => retorno),
+      catchError(erro => this.exibirErro(erro))
     );
   }
 

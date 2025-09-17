@@ -29,99 +29,11 @@
     #slidingItem>
 
       <ion-item lines="full"
-      (click)="setModal(true, participante.personagem, participante.imagem, participante.nome)"
+      (click)="abrirParticipante(participante)"
       class=cospobre-item>
 
-        <ion-thumbnail slot="start" (click)="setModal(true, participante.personagem, participante.imagem, participante.nome)">
+        <ion-thumbnail slot="start" (click)="abrirParticipante(participante)">
           <img [src]="getImageUrl(participante)" [alt]="participante.personagem" />
-          <ion-modal [isOpen]="isModalOpen" (didDismiss)="isModalOpen = false">
-            <ng-template>
-              <ion-header>
-                <ion-toolbar>
-                  <ion-title class="ion-text-lef">Personagem</ion-title>
-                  <ion-buttons slot="end">
-                    <ion-button type="submit" form="formNotas" class="custom-button">Salvar</ion-button>
-                  </ion-buttons>
-                </ion-toolbar>
-              </ion-header>
-              <ion-content [fullscreen]="false" class="modal-inner-content">
-                <div class="modal-content">
-                  <img [src]="imagem" [alt]="personagem" class="modal-image" />
-                  <h1 style="text-align: center;">{{ personagem }}</h1>
-                  <h2 style="text-align: center;">{{ nome }}</h2>
-
-                  <form [formGroup]="formCadastroNotas"
-                    (ngSubmit)="buscaNotasEAltera()"
-                    novalidate
-                    id="formNotas">
-
-                    <ion-item lines="full" class="ion-no-padding">
-                      <ion-label position="floating">Criatividade (0-10)</ion-label>
-                      <ion-input
-                        clear-input="true"
-                        required
-                        type="number"
-                        step="0.1"
-                        min="0"
-                        max="10"
-                        formControlName="criatividade">
-                      </ion-input>
-                    </ion-item>
-
-                    <ion-item *ngIf="errorControl['criatividade'].invalid && isSubmitted" lines="none">
-                      <ion-text color="danger">
-                        <small *ngIf="errorControl['criatividade'].errors?.['required']">Criatividade é obrigatória</small>
-                        <small *ngIf="errorControl['criatividade'].errors?.['min'] || errorControl['criatividade'].errors?.['max']">Nota deve ser entre 0 e 10</small>
-                        <small *ngIf="errorControl['criatividade'].errors?.['pattern']">Use formato válido (ex: 7.5)</small>
-                      </ion-text>
-                    </ion-item>
-
-                    <ion-item lines="full" class="ion-no-padding">
-                      <ion-label position="floating">Fidelidade (0-10)</ion-label>
-                      <ion-input
-                        clear-input="true"
-                        required
-                        type="number"
-                        step="0.1"
-                        min="0"
-                        max="10"
-                        formControlName="fidelidade">
-                      </ion-input>
-                    </ion-item>
-
-                    <ion-item *ngIf="errorControl['fidelidade'].invalid && isSubmitted" lines="none">
-                      <ion-text color="danger">
-                        <small *ngIf="errorControl['fidelidade'].errors?.['required']">Fidelidade é obrigatória</small>
-                        <small *ngIf="errorControl['fidelidade'].errors?.['min'] || errorControl['fidelidade'].errors?.['max']">Nota deve ser entre 0 e 10</small>
-                        <small *ngIf="errorControl['fidelidade'].errors?.['pattern']">Use formato válido (ex: 7.5)</small>
-                      </ion-text>
-                    </ion-item>
-
-                    <ion-item lines="full" class="ion-no-padding">
-                      <ion-label position="floating">Desenvolvimento (0-10)</ion-label>
-                      <ion-input
-                        clear-input="true"
-                        required
-                        type="number"
-                        step="0.1"
-                        min="0"
-                        max="10"
-                        formControlName="desenvolvimento">
-                      </ion-input>
-                    </ion-item>
-
-                    <ion-item *ngIf="errorControl['desenvolvimento'].invalid && isSubmitted" lines="none">
-                      <ion-text color="danger">
-                        <small *ngIf="errorControl['desenvolvimento'].errors?.['required']">Desenvolvimento é obrigatório</small>
-                        <small *ngIf="errorControl['desenvolvimento'].errors?.['min'] || errorControl['desenvolvimento'].errors?.['max']">Nota deve ser entre 0 e 10</small>
-                        <small *ngIf="errorControl['desenvolvimento'].errors?.['pattern']">Use formato válido (ex: 7.5)</small>
-                      </ion-text>
-                    </ion-item>
-                  </form>
-                </div>
-              </ion-content>
-            </ng-template>
-          </ion-modal>
         </ion-thumbnail>
 
         <ion-label class="ion-text-wrap">

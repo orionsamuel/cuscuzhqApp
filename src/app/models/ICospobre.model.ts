@@ -7,6 +7,7 @@ export interface ICospobre{
   email: string;
   personagem: string;
   edicao: number;
+  cospobreId: number;
   imagem: string;
   som: string;
 }
