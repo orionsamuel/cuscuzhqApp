@@ -15,14 +15,11 @@
     <div class="search-container">
       <ion-searchbar
         [(ngModel)]="termoBusca"
-        (ionInput)="buscarInscrito($event)"
+        (ionInput)="buscarInscrito()"
+        (ionClear)="limparBusca()"
         placeholder="Buscar"
         debounce="300">
       </ion-searchbar>
-
-      <ion-button *ngIf="termoBusca" fill="clear" size="small" (click)="limparBusca()">
-        <ion-icon name="close-circle"></ion-icon>
-      </ion-button>
     </div>
   </ion-toolbar>
 </ion-header>
@@ -50,7 +47,7 @@
 
     <ion-list *ngIf="listaInscritos" class="inscrito-lista">
 
-      <ion-item-sliding *ngFor="let inscrito of listaInscritos">
+      <ion-item-sliding *ngFor="let inscrito of listaInscritos; trackBy: trackById">
         <ion-item
           (click)="abrirModal(inscrito)"
           lines="full"

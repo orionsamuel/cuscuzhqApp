@@ -127,6 +127,10 @@ ion-item.inscrito-item {
 ion-card {
   margin: 20px;
 
+  ion-button {
+    color: #758fff;
+  }
+
   ion-card-content {
     padding: 20px;
   }
@@ -274,6 +278,14 @@ ion-item {
     ion-spinner {
       --color: white;
     }
+  }
+
+  ion-card {
+    background: var(--ion-color-cuscuz-preto);
+  }
+
+  ion-card-subtitle {
+    color: white !important;
   }
 
   ion-title{

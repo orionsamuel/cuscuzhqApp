@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
@@ -73,6 +73,7 @@ export class Tab1Page implements OnInit {
   private toastController = inject(ToastController);
   private router = inject(Router);
   private inscritosService = inject(InscritosService);
+  private cdr = inject(ChangeDetectorRef);
 
   @ViewChild('refresher', { static: false, read: IonRefresher })
   refresher?: IonRefresher;
@@ -147,8 +148,8 @@ export class Tab1Page implements OnInit {
         this.inscritosService.buscarTodosInscritos()
       );
 
-      this.listaCompleta = participantes ?? [];
-      this.listaInscritos = participantes ?? [];
+      this.listaCompleta = participantes ? [...participantes] : [];
+      this.listaInscritos = participantes ? [...participantes] : [];
       this.tamanho = this.listaInscritos.length;
 
       console.log('Lista atualizada com', this.tamanho, 'inscritos');
@@ -166,11 +167,10 @@ export class Tab1Page implements OnInit {
     }
   }
 
-  buscarInscrito(evento: any) {
-    const busca = evento.target.value;
-    this.termoBusca = busca;
+  buscarInscrito() {
+    const busca = this.termoBusca?.trim();
 
-    if (busca && busca.trim() !== '') {
+    if (busca) {
       this.inscritosService.buscarInscrito(busca).subscribe({
         next: (dados) => {
           this.listaInscritos = dados;
@@ -181,8 +181,7 @@ export class Tab1Page implements OnInit {
         }
       });
     } else {
-      this.listaInscritos = this.listaCompleta;
-      this.tamanho = this.listaCompleta.length;
+      this.limparBusca();
     }
   }
 
@@ -267,12 +266,22 @@ export class Tab1Page implements OnInit {
         if (index !== -1) {
           this.listaInscritos[index] = { ...this.inscritoSelecionado };
         }
+
+        const idx = this.listaCompleta.findIndex(i => i.id === this.inscritoSelecionado!.id);
+        if (idx !== -1) {
+          this.listaCompleta[idx] = { ...this.inscritoSelecionado };
+        }
       },
       error: (erro) => {
         console.error('Erro ao atualizar presença:', erro);
         this.mostrarToast('Erro ao atualizar presença', true);
       }
     });
+
+    this.listaCompleta = [...this.listaCompleta];
+    this.listaInscritos = [...this.listaInscritos];
+
+    this.cdr.detectChanges();
   }
 
   async excluirInscrito() {
@@ -331,9 +340,13 @@ export class Tab1Page implements OnInit {
     await toast.present();
   }
 
+  trackById(index: number, item: any) {
+    return item?.id ?? index;
+  }
+
   limparBusca() {
     this.termoBusca = '';
-    this.listaInscritos = this.listaCompleta;
-    this.tamanho = this.listaCompleta.length;
+    this.cdr.detectChanges();
+    this.carregarTodosInscritos();
   }
 }

@@ -44,15 +44,12 @@
         </ion-label>
 
         <div class="audio-controls">
-          <ion-button size="small" (click)="reproduzirAudio(participante.som); $event.stopPropagation()"
-          fill="clear">
-            <ion-icon name="play"></ion-icon>
+          <ion-button size="small"
+            (click)="toggleAudio(participante.id, participante.som); $event.stopPropagation()"
+            fill="clear">
+            <ion-icon [name]="players[participante.id]?.isPlaying ? 'pause' : 'play'"></ion-icon>
           </ion-button>
-          <ion-button size="small" (click)="pausarAudio(); $event.stopPropagation()"
-          fill="clear">
-            <ion-icon name="pause"></ion-icon>
-          </ion-button>
-          <ion-button size="small" (click)="pararAudio() ; $event.stopPropagation()"
+          <ion-button size="small" (click)="pararAudio(participante.id) ; $event.stopPropagation()"
           fill="clear">
             <ion-icon name="stop"></ion-icon>
           </ion-button>

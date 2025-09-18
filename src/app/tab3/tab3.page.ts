@@ -76,10 +76,9 @@ export class Tab3Page implements OnInit {
   edicao!: number;
   notas: any = {};
   listaParticipantes!: any[];
-  musica!: HTMLAudioElement;
-  posicaoReproducao = 0;
   cachedImages: { [key: string]: string } = {};
   isLoading = false;
+  players: { [id: number]: { audio: HTMLAudioElement, isPlaying: boolean, posicao: number } | undefined } = {};
 
   constructor() {
     this.platform.ready().then(() => {
@@ -114,7 +113,6 @@ export class Tab3Page implements OnInit {
     try {
       for (const participante of this.listaParticipantes) {
         const cachedImageUrl = await this.imageCacheService.cacheImage(participante.imagem, participante.email);
-        // console.log('URL cache: ', cachedImageUrl);
         this.cachedImages[participante.email] = cachedImageUrl;
       }
     } catch (error) {
@@ -123,7 +121,6 @@ export class Tab3Page implements OnInit {
   }
 
   getImageUrl(participante: any): string {
-    // console.log('URL final da imagem: ', this.cachedImages[participante.email]);
     const cacheUrl = this.cachedImages[participante.email];
     if (cacheUrl && !cacheUrl.includes('null')) {
       return cacheUrl;
@@ -183,28 +180,42 @@ export class Tab3Page implements OnInit {
   }
 
 
-  reproduzirAudio(musicaUrl: string) {
-    if (this.musica) {
-      this.musica.pause();
+  toggleAudio(participanteId: number,musicaUrl: string) {
+    let player = this.players[participanteId];
+
+    if (!player) {
+      const audio = new Audio(musicaUrl);
+      player = {
+        audio,
+        isPlaying: false,
+        posicao: 0
+      };
+      this.players[participanteId] = player;
+
+      audio.onended = () => {
+        player!.isPlaying = false;
+        player!.posicao = 0;
+      };
     }
 
-    this.musica = new Audio(musicaUrl);
-    this.musica.currentTime = this.posicaoReproducao;
-    this.musica.play();
-  }
-
-  pausarAudio() {
-    if (this.musica) {
-      this.posicaoReproducao = this.musica.currentTime;
-      this.musica.pause();
+    if (player.isPlaying) {
+      player.posicao = player.audio.currentTime;
+      player.audio.pause();
+      player.isPlaying = false;
+    } else {
+      player.audio.currentTime = player.posicao;
+      player.audio.play();
+      player.isPlaying = true;
     }
   }
 
-  pararAudio() {
-    if (this.musica) {
-      this.musica.pause();
-      this.musica.currentTime = 0;
-      this.posicaoReproducao = 0;
+  pararAudio(participanteId: number) {
+    const player = this.players[participanteId];
+    if (player) {
+      player.audio.pause();
+      player.audio.currentTime = 0;
+      player.posicao = 0;
+      player.isPlaying = false;
     }
   }
 
