@@ -1,0 +1,16 @@
+{
+	"appId": "io.ionic.starter",
+	"appName": "Cuscuz HQ",
+	"webDir": "www",
+	"android": {
+		"adjustMarginsForEdgeToEdge": "auto"
+	},
+	"packageClassList": [
+		"SafeAreaPlugin",
+		"AppPlugin",
+		"FilesystemPlugin",
+		"HapticsPlugin",
+		"KeyboardPlugin",
+		"StatusBarPlugin"
+	]
+}
