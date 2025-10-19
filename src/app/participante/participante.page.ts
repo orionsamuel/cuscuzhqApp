@@ -159,73 +159,72 @@ export class ParticipantePage implements OnInit {
     });
   }
 
-  cadastroNotas() {
-    this.isSubmitted = true;
+async cadastroNotas() {
+  this.isSubmitted = true;
 
-    if (!this.formCadastroNotas.valid) {
-      this.presentToast('Por favor, preencha as notas corretamente', 'danger');
+  if (!this.formCadastroNotas.valid) {
+    this.presentToast('Por favor, preencha as notas corretamente', 'danger');
+    return;
+  }
+
+  try {
+    const notaEncontrada = this.listaNotas.find(
+      (nota) => nota.id === this.participante.id
+    );
+
+    if (!notaEncontrada) {
+      this.presentToast('Erro: Participante não encontrado nas notas', 'danger');
       return;
     }
 
-    console.log(this.formCadastroNotas.value);
+    const nota1Existente = this.parseSafeFloat(notaEncontrada.nota_1);
+    const nota2Existente = this.parseSafeFloat(notaEncontrada.nota_2);
+    const nota3Existente = this.parseSafeFloat(notaEncontrada.nota_3);
 
-    try {
-      const notaEncontrada = this.listaNotas.find((nota) => nota.id === this.participante.id);
-      console.log(this.listaNotas);
+    const novaNota1 = this.parseSafeFloat(this.formCadastroNotas.value.criatividade);
+    const novaNota2 = this.parseSafeFloat(this.formCadastroNotas.value.fidelidade);
+    const novaNota3 = this.parseSafeFloat(this.formCadastroNotas.value.desenvolvimento);
 
-      if (!notaEncontrada) {
-        this.presentToast('Erro: Participante não encontrado nas notas', 'danger');
-        return;
+    const nota1Final = nota1Existente + novaNota1;
+    const nota2Final = nota2Existente + novaNota2;
+    const nota3Final = nota3Existente + novaNota3;
+    const totalNota = (nota1Final + nota2Final + nota3Final) / 3;
+
+    const dadosParaEnviar = {
+      ...notaEncontrada,
+      nota_1: nota1Final.toFixed(2),
+      nota_2: nota2Final.toFixed(2),
+      nota_3: nota3Final.toFixed(2),
+      total_nota: totalNota.toFixed(2)
+    };
+
+    this.notasService.atualizarNotas(dadosParaEnviar, this.edicao, true).subscribe({
+      next: async () => {
+        Object.assign(notaEncontrada, {
+          nota_1: dadosParaEnviar.nota_1,
+          nota_2: dadosParaEnviar.nota_2,
+          nota_3: dadosParaEnviar.nota_3,
+          total_nota: dadosParaEnviar.total_nota
+        });
+
+        await this.buscarNotas();
+
+        this.presentToast('Notas Cadastradas com Sucesso', 'success');
+        this.formCadastroNotas.reset();
+        this.isSubmitted = false;
+
+        this.router.navigate(['/tabs/tab3']);
+      },
+      error: () => {
+        this.presentToast('Erro ao cadastrar notas. Tente novamente.', 'danger');
       }
+    });
 
-      console.log(this.participante.nome);
-
-      const nota1Existente = this.parseSafeFloat(notaEncontrada.nota_1);
-      const nota2Existente = this.parseSafeFloat(notaEncontrada.nota_2);
-      const nota3Existente = this.parseSafeFloat(notaEncontrada.nota_3);
-
-      const novaNota1 = this.parseSafeFloat(this.formCadastroNotas.value.criatividade);
-      const novaNota2 = this.parseSafeFloat(this.formCadastroNotas.value.fidelidade);
-      const novaNota3 = this.parseSafeFloat(this.formCadastroNotas.value.desenvolvimento);
-
-      const nota1Final = nota1Existente + novaNota1;
-      const nota2Final = nota2Existente + novaNota2;
-      const nota3Final = nota3Existente + novaNota3;
-      const totalNota = (nota1Final + nota2Final + nota3Final) / 3;
-
-      const dadosParaEnviar = {
-        id: notaEncontrada.id,
-        nome: notaEncontrada.nome,
-        personagem: notaEncontrada.personagem,
-        edicao: notaEncontrada.edicao,
-        nota_1: nota1Final.toFixed(2),
-        nota_2: nota2Final.toFixed(2),
-        nota_3: nota3Final.toFixed(2),
-        total_nota: totalNota.toFixed(2)
-      };
-
-      console.log('📤 Dados para envio:', dadosParaEnviar);
-
-      this.notasService.atualizarNotas(dadosParaEnviar, this.edicao, true).subscribe({
-        next: (dados) => {
-          console.log('✅ Resposta do servidor:', dados);
-          this.presentToast('Notas Cadastradas Com Sucesso', 'success');
-          this.formCadastroNotas.reset();
-          this.isSubmitted = false;
-        },
-        error: (erro) => {
-          console.error('❌ Erro no cadastro de notas:', erro);
-          this.presentToast('Erro ao cadastrar notas. Tente novamente.', 'danger');
-        }
-      });
-
-      this.presentToast('Notas Cadastradas Com Sucesso', 'success');
-      this.router.navigate(['/tabs/tab3']);
-    } catch (error) {
-      console.error('Erro ao cadastrar as notas:', error);
-      this.presentToast('Erro ao cadastrar as notas', 'danger');
-    }
+  } catch (error) {
+    console.error('Erro ao cadastrar notas:', error);
+    this.presentToast('Erro inesperado ao cadastrar as notas', 'danger');
   }
+}
 
   toggleImage() {
     this.isExpanded = !this.isExpanded;
