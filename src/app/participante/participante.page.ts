@@ -170,7 +170,7 @@ export class ParticipantePage implements OnInit {
     console.log(this.formCadastroNotas.value);
 
     try {
-      const notaEncontrada = this.listaNotas.find((nota) => nota.nome === this.nome.id);
+      const notaEncontrada = this.listaNotas.find((nota) => nota.nome === this.participante.nome);
       console.log(this.listaNotas);
 
       if (!notaEncontrada) {
